@@ -11,7 +11,7 @@ class PYdatabase {
         const tealColor = "#1e90ff";
 
         return {
-            id: "fileExtension",
+            id: "PYdatabase",
             name: "File Manager",
             color1: tealColor,
             color2: tealColor,
@@ -63,6 +63,34 @@ class PYdatabase {
                     blockType: Scratch.BlockType.REPORTER,
                     text: "Last uploaded file",
                     color: tealColor
+                },
+
+                // 🔽 NEW REPORTER BLOCK
+                {
+                    opcode: "getSpecificFile",
+                    blockType: Scratch.BlockType.REPORTER,
+                    text: "Get file [FILE]",
+                    arguments: {
+                        FILE: {
+                            type: Scratch.ArgumentType.STRING,
+                            defaultValue: this.defaultFileName
+                        }
+                    },
+                    color: tealColor
+                },
+
+                // 🔽 NEW BOOLEAN BLOCK
+                {
+                    opcode: "fileExists",
+                    blockType: Scratch.BlockType.BOOLEAN,
+                    text: "file [FILE] exists?",
+                    arguments: {
+                        FILE: {
+                            type: Scratch.ArgumentType.STRING,
+                            defaultValue: this.defaultFileName
+                        }
+                    },
+                    color: tealColor
                 }
             ]
         };
@@ -72,7 +100,6 @@ class PYdatabase {
     setFileContent(args) {
         const fileName = args.FILE;
         const content = args.CONTENT;
-
         if (!fileName) return;
 
         this.defaultFileName = fileName;
@@ -100,7 +127,9 @@ class PYdatabase {
             }
 
             this.lastUploaded = fileName;
-            if (!this.fileList.includes(fileName)) this.fileList.push(fileName);
+            if (!this.fileList.includes(fileName)) {
+                this.fileList.push(fileName);
+            }
 
             console.log(`Uploaded file: ${fileName}`);
         } catch (err) {
@@ -115,15 +144,32 @@ class PYdatabase {
 
     // Returns a comma-separated list of uploaded files
     getFiles() {
-        if (this.fileList.length === 0) return "No files uploaded";
-        return this.fileList.join(", ");
+        return this.fileList.length
+            ? this.fileList.join(", ")
+            : "No files uploaded";
     }
 
     // Returns the last uploaded file
     getLastFile() {
         return this.lastUploaded || "No file uploaded yet";
     }
+
+    // 🔽 NEW: Returns a specific file if it exists
+    getSpecificFile(args) {
+        const fileName = args.FILE;
+        if (!fileName) return "No file specified";
+
+        return this.fileList.includes(fileName)
+            ? fileName
+            : "File not found";
+    }
+
+    // 🔽 NEW: Boolean check for file existence
+    fileExists(args) {
+        const fileName = args.FILE;
+        return this.fileList.includes(fileName);
+    }
 }
 
 // Register the extension with Scratch
-Scratch.extensions.register(new FileExtension());
+Scratch.extensions.register(new PYdatabase());
