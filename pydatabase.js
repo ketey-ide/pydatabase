@@ -11,7 +11,7 @@ class PYdatabase {
         const tealColor = "#1e90ff";
 
         return {
-            id: "PYdatabase",
+            id: "KeteyIDEPYdatabase",
             name: "File Manager",
             color1: tealColor,
             color2: tealColor,
